@@ -1,0 +1,13 @@
+extends loginLayout
+
+block content
+    form(action = '/auth/register' method = 'post')
+        .form-group
+            input#username.form-control(type='text' name='username' placeholder='Name', required = '')
+        .form-group
+            input#email.form-control(type='email' name='email' placeholder='E-mail', required = '')
+        if(messages.email_err)
+            h5= messages.email_err
+        .form-group
+            input#password.form-control(type='password' name='password' placeholder='Password', required = '')
+        button.btn.btn-primary.btn-block(type='submit') Submit

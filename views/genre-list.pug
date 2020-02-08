@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  div.my-3.p-3.bg-white.rounded.shadow-sm
+    // header
+    h3.border-bottom.border-gray.pb-2.mb-0 #{header}
+    
+    // select form for filtering by years
+    select#sel1.form-control(onchange="location = this.value;")
+      option(selected='' disabled='') Filter by genre...
+      option(value="/genres/") All Genres
+      each genre in genres
+        option(value="/genres/"+genre.name) #{genre.name}
+    
+    // movie list
+    ul.list-group
+      each movie in movies
+        li.list-group-item
+          img(src=movie.poster style = 'width: 5%; border-radius: 5%;')
+          a(href="/movies/id/"+movie.id, style = 'padding-left: 5em;') #{movie.title}

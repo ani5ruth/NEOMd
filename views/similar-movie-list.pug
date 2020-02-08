@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  div.my-3.p-3.bg-white.rounded.shadow-sm
+    // header
+    h3.border-bottom.border-gray.pb-2.mb-0 #{header}
+    
+    // movie list
+    if movies.length==0 
+      h4 sorry no results were found
+
+    ul.list-group
+        each movie in movies
+            li.list-group-item
+                img(src=movie.poster style = 'width: 5%; border-radius: 5%;')
+                a(href="/movies/id/"+movie.id, style = 'padding-left: 5em;') #{movie.title}

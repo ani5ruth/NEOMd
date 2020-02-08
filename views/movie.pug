@@ -1,0 +1,66 @@
+extends layout
+
+block content
+    //movie details section
+    div.my-3.p-3.bg-white.rounded.shadow-sm
+        h4.border-bottom.border-gray.pb-2.mb-0 #{movie.title} (#{movie.year})
+            h6 Runtime: #{movie.runtime}m
+            h6 Average Rating: #{movie.rating}/5
+            div.my-3.p-3.bg-white.rounded.shadow-sm
+                img(src= movie.poster, alt="poster", style = 'border-radius: 5%;')
+            div.my-3.p-3.bg-white.rounded.shadow-sm
+                h5.border-bottom.border-gray.pb-2.mb-0 Plot:
+                h6 #{movie.plot}
+            div.my-3.p-3.bg-white.rounded.shadow-sm
+                h5.border-bottom.border-gray.pb-2.mb-0 Genres:
+                ul.list-group
+                    each genre in genres
+                        li.list-group-item
+                            a(href="/genres/"+genre.name) 
+                                h6 #{genre.name}
+            div.my-3.p-3.bg-white.rounded.shadow-sm
+                h5.border-bottom.border-gray.pb-2.mb-0 Directed By:
+                ul.list-group
+                    each director in directors
+                        li.list-group-item
+                            a(href="/persons/"+director.name) 
+                                h6 #{director.name}
+            div.my-3.p-3.bg-white.rounded.shadow-sm
+                h5.border-bottom.border-gray.pb-2.mb-0 Cast:
+                ul.list-group
+                    each actor in cast
+                        li.list-group-item
+                            a(href="/persons/"+actor.name) 
+                                h6 #{actor.name}
+
+    // user section (watchlist/rating)
+    div.my-3.p-3.bg-white.rounded.shadow-sm
+        form(action=`/users/rate/${movie.id}`, method = 'post')
+            if(rating)
+                b= `Previous rating: ${rating}/5`
+            div.form-group.row
+                div.col-auto
+                    input.form-control(type = 'number' name = 'rating' min = '1' max = '5', placeholder = 'Rate')
+                div.col-auto
+                    button.btn.btn-light(type = 'submit')
+                        img(src = '/star.png', height = '32', width = '32')
+        
+        form(action=`/users/watchlist/${movie.id}`, method = 'post')
+            if(!inWatchlist)
+                div.form-group
+                    button.btn.btn-primary(type = 'submit') + Watchlist
+            else
+                div.form-group
+                    button.btn.btn-success(type = 'submit') ✓ Watchlist
+    
+    //similar movies section
+    div.my-3.p-3.bg-white.rounded.shadow-sm
+        h5.border-bottom.border-gray.pb-2.mb-0 Similar Movies:
+        ul.list-group
+            each movie in similarMovies
+                li.list-group-item
+                    a(href="/movies/id/"+movie.id) 
+                        h6 #{movie.title}
+            li.list-group-item
+                a(href="/movies/similar/"+movie.id)
+                    h7 View More...

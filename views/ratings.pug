@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  div.my-3.p-3.bg-white.rounded.shadow-sm
+    ul.list-group
+      each rating in ratings
+        li.list-group-item
+          b(style = 'padding-right: 2em;')= rating.rating
+          img(src=rating.movie.poster style = 'width: 5%; border-radius: 5%;')
+          a(href="/movies/id/"+rating.movie.id, style = 'padding-left: 5em;')= rating.movie.title       

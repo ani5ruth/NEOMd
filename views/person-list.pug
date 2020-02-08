@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  div.my-3.p-3.bg-white.rounded.shadow-sm
+    h3.border-bottom.border-gray.pb-2.mb-0 Popular Directors
+    ul.list-group
+      each director in popularDirectors
+        li.list-group-item
+          a(href="/persons/"+director.name) #{director.name}
+
+  div.my-3.p-3.bg-white.rounded.shadow-sm
+    h3.border-bottom.border-gray.pb-2.mb-0 Popular Actors
+    ul.list-group
+      each actor in popularActors
+        li.list-group-item
+          a(href="/persons/"+actor.name) #{actor.name}
