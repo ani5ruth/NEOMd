@@ -1,0 +1,92 @@
+List Movies by relevance:
+
+PGSQL:(~100ms)
+SELECT movie.id AS m_id
+FROM movie INNER JOIN ratings ON movie.id = ratings.movie_id
+GROUP BY m_id ORDER BY COUNT(*) DESC;
+
+Neo4j:(~100ms)
+MATCH(m:Movie)<-[:RATED]-(u:User) 
+WITH m.imdbId AS id,COUNT(*) AS relevance
+ORDER BY relevance DESC RETURN id
+--------------------------------------------------------------------------------------------------------
+
+Get Matching Genres between two movies:
+
+PGSQL:(~80ms)
+SELECT movie_id, COUNT(*) AS common_genre
+FROM in_genre
+WHERE genre_id IN (SELECT genre_id FROM in_genre WHERE movie_id = 1375666) AND movie_id != 1375666
+GROUP BY movie_id ORDER BY common_genre DESC
+
+Neo4j:(~25ms)
+MATCH(m:Movie{imdbId: "1375666"})-[:IN_GENRE]->(g:Genre)<-[:IN_GENRE]-(sim:Movie)
+WITH sim.imdbId as movie_id, COUNT(*) AS common_genres
+ORDER BY common_genres DESC
+RETURN movie_id, common_genres
+
+---------------------------------------------------------------------------------------------------------
+Get Matching Directors: 
+
+Neo4j: (~1ms)
+MATCH(m:Movie{imdbId : "1375666"})<-[:DIRECTED]-(:Director)-[:DIRECTED]->(sim:Movie)
+WITH sim.imdbId AS movie_id, COUNT(*) AS common_directors
+ORDER BY common_directors DESC RETURN movie_id
+
+PGSQl: (~65ms)
+SELECT movie_id, COUNT(*) AS common_directors
+FROM directed
+WHERE director_id IN (SELECT director_id FROM directed WHERE movie_id = 1375666) AND movie_id != 1375666
+GROUP BY movie_id ORDER BY common_directors DESC
+
+-------------------------------------------------------------------------------------------------------
+Weighted Similarity 
+
+Neo4j(~100-150ms) :
+MATCH (curr :Movie { imdbId: "1375666" })-[:IN_GENRE]->(g:Genre)<-[:IN_GENRE]-(sim :Movie)
+WITH curr, sim, COUNT(*) AS commonGenres
+OPTIONAL MATCH(curr)<-[: DIRECTED]-(d:Director)-[:DIRECTED]-> (sim)
+WITH curr, sim, commonGenres, COUNT(d) AS commonDirectors
+OPTIONAL MATCH(curr)<-[: ACTED_IN]-(a: Actor)-[:ACTED_IN]->(sim)
+WITH curr, sim, commonGenres, commonDirectors, COUNT(a) AS commonActors
+WITH sim.imdbId AS id, (3 * commonGenres) + (5 * commonDirectors) + (2 * commonActors) AS Similarity
+ORDER BY Similarity DESC RETURN id
+
+PGSQL(~100-150ms):
+WITH 
+cg AS 
+(
+	SELECT movie_id, COUNT(*) AS common_genre
+	FROM in_genre
+	WHERE genre_id IN (SELECT genre_id FROM in_genre WHERE movie_id = 1375666) AND movie_id != 1375666
+	GROUP BY movie_id ORDER BY common_genre DESC
+),
+cd AS
+(
+	SELECT movie_id, COUNT(*) AS common_directors
+	FROM directed
+	WHERE director_id IN (SELECT director_id FROM directed WHERE movie_id = 1375666) AND movie_id != 1375666
+	GROUP BY movie_id ORDER BY common_directors DESC
+),
+ca AS 
+(
+	SELECT movie_id, COUNT(*) AS common_actors
+	FROM acted_in
+	WHERE actor_id IN (SELECT actor_id FROM acted_in WHERE movie_id = 1375666) AND movie_id != 1375666
+	GROUP BY movie_id ORDER BY common_actors DESC
+),
+t1 AS 
+(
+	SELECT cg.movie_id, common_genre, COALESCE(common_directors, 0) AS common_directors
+	FROM cg LEFT JOIN cd ON cg.movie_id = cd.movie_id
+),
+t2 AS 
+(
+	SELECT t1.movie_id, common_genre, common_directors, COALESCE(common_actors, 0) AS common_actors
+	FROM t1 LEFT JOIN ca ON t1.movie_id = ca.movie_id
+)
+SELECT movie_id, (3*common_genre + 5*common_directors + 2*common_actors) AS similarity FROM t2
+ORDER BY similarity DESC
+
+
+Conclusion : Similar performace asymptotically, but designing queries is much easier in neo4j as compared to sql.
