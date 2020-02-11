@@ -1,5 +1,4 @@
 const executeQuery = require('./db/Neo4jApi').executeQuery;
-const Movie = require('./Movie');
 
 module.exports = class User {
     constructor(email) {
@@ -53,16 +52,7 @@ module.exports = class User {
             { email: this.email }
         );
 
-        const ratings = [];
-        if (response.records.length != 0) {
-            for (const record of response.records[0]._fields[0]) {
-                const movie = new Movie(record[0]);
-                await movie.getDetails();
-                const rating = record[1];
-                ratings.push({ movie, rating });
-            }
-        }
-        return ratings;
+        return response.records[0]._fields[0];
     }
 
     // return a boolean that indicates whether a movie is in watchlist or not
@@ -83,7 +73,7 @@ module.exports = class User {
             { email: this.email }
         );
 
-        return await Movie.getMovieList(response.records[0]._fields[0]);
+        return response.records[0]._fields[0];
     }
 
     // creates watchlisted relationship with a movie and user 
@@ -101,6 +91,14 @@ module.exports = class User {
             'MATCH(u:User {email : $email})-[r:WATCHLISTED]->(m:Movie {imdbId : $imdbId })\
             DELETE r',
             { email: this.email, imdbId }
+        );
+    }
+
+    async addReview(imdbId, review) {
+        await executeQuery(
+            'MATCH(u:User{email : $email}), (m:Movie{imdbId : $imdbId})\
+            MERGE (u)-[r:REVIEWED{review : $review}]->(m)',
+            { email: this.email, imdbId, review }
         );
     }
 
@@ -132,8 +130,7 @@ module.exports = class User {
                 RETURN collect(id)',
                     { email: this.email, id }
                 );
-                const similar = await Movie.getMovieList(response.records[0]._fields[0]);
-                similar.forEach(movie => recommendations.push(movie));
+                response.records[0]._fields[0].forEach(movie => recommendations.push(movie));
             }
         }
         return recommendations;

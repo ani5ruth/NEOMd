@@ -51,15 +51,37 @@ block content
                         h5.border-bottom.border-gray.pb-2.mb-0 Rating
                         br
                         form(action=`/users/rate/${movie.id}`, method = 'post')
-                            if(rating)
-                                h6= `Your previous rating: ${rating}/5`
-                            else
-                                h6 You haven't rated this movie before.
                             div.form-group.row
-                                div.col-auto
-                                    input.form-control(type = 'number' name = 'rating' min = '1' max = '5', placeholder = 'Rate')
-                                div.col-auto
-                                    button.text-light.btn.btn-warning(type = 'submit') ★
+                                div.col-sm-2
+                                    if(rating >= 1)
+                                        button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '1') ★
+                                    else
+                                        button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '1') ★
+                                    h6.pl-3.pt-1 1
+                                div.col-sm-2
+                                    if(rating >= 2)
+                                        button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '2') ★
+                                    else
+                                        button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '2') ★
+                                    h6.pl-3.pt-1 2
+                                div.col-sm-2
+                                    if(rating >= 3)
+                                        button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '3') ★
+                                    else
+                                        button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '3') ★
+                                    h6.pl-3.pt-1 3
+                                div.col-sm-2
+                                    if(rating >= 4)
+                                        button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '4') ★
+                                    else
+                                        button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '4') ★
+                                    h6.pl-3.pt-1 4
+                                div.col-sm-2
+                                    if(rating == 5)
+                                        button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '5') ★
+                                    else
+                                        button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '5') ★
+                                    h6.pl-3.pt-1 5
                 div.col
                     div.my-3.p-3.bg-white.rounded.shadow-sm
                         h5.border-bottom.border-gray.pb-2.mb-0 Watchlist
@@ -73,9 +95,18 @@ block content
                                 div.form-group
                                     button.btn.btn-success(type = 'submit') ✓
                                     b.pl-4 Already watchlisted.
+            div.row
+                div.col
+                    div.my-3.p-3.bg-white.rounded.shadow-sm
+                        form(action=`/users/review/${movie.id}`, method = 'post')
+                            div.form-group
+                                div.d-flex.justify-content-between
+                                    h5.border-bottom.border-gray.pb-2.mb-0 Review
+                                    button.mb-5.btn.btn-danger(type = 'submit') Post
+                                textarea.form-control(name = 'review' rows = '5' maxlength = '50')
 
     // similar movies section
-    div.my-3.p-3.bg-white.rounded.shadow-sm.overflow-auto
+    div.my-3.p-3.bg-white.rounded.shadow-sm
         div.d-flex.justify-content-between
             h5.border-bottom.border-gray.pb-2.mb-0 Similar Movies
             a(href="/movies/similar/"+movie.id)
@@ -89,3 +120,19 @@ block content
                                 img.card-img-top(src=movie.poster)
                                 a.p-2.text-center(href="/movies/id/"+movie.id)
                                     b #{movie.title}
+    
+    div.my-3.p-3.bg-white.rounded.shadow-sm
+        div.d-flex.justify-content-between
+            h5 Reviews
+            a(href=`/movies/review/${movie.id}`)
+                b View More...
+        
+        if reviews.length == 0
+            h5 Sorry, no results were found
+
+        ul.list-group
+        each review in reviews
+            li.list-group-item
+                div.my-3.p-3.bg-white.rounded.shadow-sm
+                    h6 Reviewed by #{review.email}
+                    h4 #{review.content}

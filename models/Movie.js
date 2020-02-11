@@ -105,6 +105,16 @@ module.exports = class Movie {
         return await Movie.getMovieList(response.records[0]._fields[0]);
     }
 
+    async getReviews(limit) {
+        const response = await executeQuery(
+            'MATCH(u:User)-[r:REVIEWED]->(m:Movie{imdbId : $imdbId})\
+            RETURN collect([u.email, r.review])\
+            LIMIT $limit',
+            { imdbId: this.id, limit }
+        );
+        return response.records[0]._fields[0];
+    }
+
     // returns all time popular movie
     static async getPopularMovies(limit) {
         const response = await executeQuery(
@@ -131,9 +141,6 @@ module.exports = class Movie {
         return await Movie.getMovieList(response.records[0]._fields[0]);
     }
 
-    static async test() {
-    }
-
     static async getYears() {
         const response = await executeQuery(
             'MATCH (m:Movie)\
@@ -141,5 +148,8 @@ module.exports = class Movie {
             RETURN COLLECT(year)'
         );
         return response.records[0]._fields[0];
+    }
+
+    static async test() {
     }
 }

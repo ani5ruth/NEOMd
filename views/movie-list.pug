@@ -7,7 +7,7 @@ block content
     
     // select form for filtering by years
     select#sel1.form-control(onchange="location = this.value;")
-      option(selected='' disabled='') Filter by year...
+      option(selected='' disabled='' hidden = '') Filter by year...
       option(value="/movies/") All Time
       each year in years
         option(value="/movies/years/"+year) #{year}

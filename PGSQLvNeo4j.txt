@@ -87,6 +87,13 @@ t2 AS
 )
 SELECT movie_id, (3*common_genre + 5*common_directors + 2*common_actors) AS similarity FROM t2
 ORDER BY similarity DESC
-
+-----------------------------------------------------------------------------------------------
+Colaborative Filtering: 
+Neo4j
+MATCH(m:Movie{title:"Inception"})<-[r:RATED]-(u:User) WHERE r.rating >=3
+MATCH (u)-[x:RATED]->(sim) WHERE sim.imdbId <> m.imdbId AND x.rating >= 3
+WITH sim.title AS title, COUNT(*) as relevance 
+RETURN title ORDER BY relevance DESC
+LIMIT 25
 
 Conclusion : Similar performace asymptotically, but designing queries is much easier in neo4j as compared to sql.

@@ -7,7 +7,7 @@ block content
     
     // select form for filtering by years
     select#sel1.form-control(onchange="location = this.value;")
-      option(selected='' disabled='') Filter by genre...
+      option(selected='' disabled='' hidden = '') Filter by genre...
       option(value="/genres/") All Genres
       each genre in genres
         option(value="/genres/"+genre.name) #{genre.name}

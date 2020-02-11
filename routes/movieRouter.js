@@ -50,6 +50,14 @@ router.get('/id/:id?', async (req, res) => {
     // get similar movies
     const similarMovies = await movie.getSimilar(5);
 
+    // get 5 reviews
+    const records = await movie.getReviews(25);
+    const reviews = [];
+    records.forEach(record => reviews.push({
+        email: record[0],
+        content: record[1]
+    }));
+
     // respond
     res.render('movie', {
         title: `${movie.title}`,
@@ -59,7 +67,8 @@ router.get('/id/:id?', async (req, res) => {
         cast,
         inWatchlist,
         rating,
-        similarMovies
+        similarMovies,
+        reviews
     });
 });
 
@@ -75,6 +84,23 @@ router.get('/similar/:id?', async (req, res) => {
         movies
     });
 });
+
+router.get('/review/:id?', async (req, res) => {
+    const id = req.params.id;
+    const movie = new Movie(id);
+    await movie.getDetails();
+    const records = await movie.getReviews(25);
+    const reviews = [];
+    records.forEach(record => reviews.push({
+        email: record[0],
+        content: record[1]
+    }));
+    res.render('reviews', {
+        title: `${movie.title} reviews`,
+        header: `Reviews for ${movie.title}`,
+        reviews
+    });
+})
 
 
 module.exports = router;
