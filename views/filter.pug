@@ -1,0 +1,23 @@
+extends layout
+
+block content
+    // FILTER
+    select#sel1.form-control(onchange="location = this.value;")
+        option(selected='' disabled='' hidden = '') Filter by #{item_name}...
+        
+        if item_name == 'genre'    
+            option(value=`all`) All genres
+            each genre in genres
+                option(value=`${genre.name}`) #{genre.name}
+        
+        else if item_name == 'year'    
+            option(value=`all`) All years
+            each year in years
+                option(value=`${year}`) #{year}
+
+    // MOVIE-LIST
+    ul.list-group
+        each movie in movies
+            li.list-group-item
+                img.rounded(src=movie.poster style = 'width: 5%;')
+                a(href=`/movies/id/${movie.id}`, style = 'padding-left: 3em;') #{movie.title}
