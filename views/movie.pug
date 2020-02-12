@@ -120,6 +120,22 @@ block content
                                 img.card-img-top(src=movie.poster)
                                 a.p-2.text-center(href="/movies/id/"+movie.id)
                                     b #{movie.title}
+
+    // similar movie collab
+    div.my-3.p-3.bg-white.rounded.shadow-sm
+        div.d-flex.justify-content-between
+            h5.border-bottom.border-gray.pb-2.mb-0 People who liked this also liked
+            a(href=`/movies/people_also_liked/${movie.id}`)
+                b View More...
+        table.table.table-borderless
+            tbody
+                tr
+                    each movie in similarCollab
+                        td
+                            div.card(style='width:11rem;')
+                                img.card-img-top(src=movie.poster)
+                                a.p-2.text-center(href="/movies/id/"+movie.id)
+                                    b #{movie.title}
     
     div.my-3.p-3.bg-white.rounded.shadow-sm
         div.d-flex.justify-content-between

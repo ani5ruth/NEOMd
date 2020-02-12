@@ -105,6 +105,19 @@ module.exports = class Movie {
         return await Movie.getMovieList(response.records[0]._fields[0]);
     }
 
+    async getSimilarCollab(limit) {
+        const response = await executeQuery(
+            'MATCH(m:Movie{imdbId : $id})<-[r:RATED]-(u:User) WHERE r.rating >=3\
+            MATCH(u)-[x: RATED]->(sim) WHERE sim.imdbId <> m.imdbId AND x.rating >= 3\
+            WITH sim.imdbId AS id, COUNT(*) as relevance\
+            ORDER BY relevance DESC LIMIT $limit\
+            RETURN collect(id)',
+            { id: this.id, limit }
+        );
+
+        return await Movie.getMovieList(response.records[0]._fields[0]);
+    }
+
     async getReviews(limit) {
         const response = await executeQuery(
             'MATCH(u:User)-[r:REVIEWED]->(m:Movie{imdbId : $imdbId})\

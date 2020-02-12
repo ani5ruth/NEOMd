@@ -4,12 +4,16 @@ const Movie = require('../models/Movie');
 const User = require('../models/User');
 
 router.get('/watchlist', async (req, res) => {
-    const movies = await Movie.getMovieList(await new User(req.session.email).getWatchlist());
-    res.render('similar-movie-list', { title: "Your Watchlist", movies });
+    const user = new User(req.session.email);
+    await user.getDetails();
+    const movies = await Movie.getMovieList(await user.getWatchlist());
+    res.render('similar-movie-list', { title: "Your Watchlist", header: `${user.name}'s Watchlist`, movies });
 });
 
 router.get('/ratings', async (req, res) => {
-    const records = await new User(req.session.email).getAllRated();
+    const user = new User(req.session.email);
+    await user.getDetails();
+    const records = await user.getAllRated();
 
     const ratings = [];
     for (const record of records) {
@@ -21,12 +25,14 @@ router.get('/ratings', async (req, res) => {
             rating: rating
         });
     }
-    res.render('ratings', { title: "Movies Rated By You", ratings });
+    res.render('ratings', { title: "Movies Rated By You", header: `${user.name}'s Ratings`, ratings });
 });
 
 router.get('/recommendations', async (req, res) => {
-    const movies = await Movie.getMovieList(await new User(req.session.email).getRecommendations());
-    res.render('similar-movie-list', { title: "Your Personalized Recommendations", movies });
+    const user = new User(req.session.email);
+    await user.getDetails();
+    const movies = await Movie.getMovieList(await user.getRecommendations());
+    res.render('similar-movie-list', { title: "Recommendations", header: `Recommendations`, movies });
 });
 
 router.post('/watchlist/:id?', async (req, res) => {

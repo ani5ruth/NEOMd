@@ -49,6 +49,7 @@ router.get('/id/:id?', async (req, res) => {
 
     // get similar movies
     const similarMovies = await movie.getSimilar(5);
+    const similarCollab = await movie.getSimilarCollab(5);
 
     // get 5 reviews
     const records = await movie.getReviews(25);
@@ -68,6 +69,7 @@ router.get('/id/:id?', async (req, res) => {
         inWatchlist,
         rating,
         similarMovies,
+        similarCollab,
         reviews
     });
 });
@@ -81,6 +83,18 @@ router.get('/similar/:id?', async (req, res) => {
     res.render('similar-movie-list', {
         title: `${movie.title} similar`,
         header: `Movies similar to ${movie.title}`,
+        movies
+    });
+});
+
+router.get('/people_also_liked/:id?', async (req, res) => {
+    const id = req.params.id;
+    const movie = new Movie(id);
+    await movie.getDetails();
+    const movies = await movie.getSimilarCollab(25);
+    res.render('similar-movie-list', {
+        title: `${movie.title} similar`,
+        header: `People who liked ${movie.title} also liked`,
         movies
     });
 });
@@ -100,7 +114,7 @@ router.get('/review/:id?', async (req, res) => {
         header: `Reviews for ${movie.title}`,
         reviews
     });
-})
+});
 
 
 module.exports = router;
