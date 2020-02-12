@@ -5,56 +5,32 @@ const Person = require('../models/Person');
 const Genre = require('../models/Genre');
 const User = require('../models/User');
 
-// get all time popular movies
-router.get('/', async (req, res) => {
-    const allTimePopularMovies = await Movie.getPopularMovies(25);
-    res.render('movie-list', {
-        title: 'Movies',
-        header: 'Popular Movies: All time',
-        movies: allTimePopularMovies,
-        years: await Movie.getYears()
-    });
-});
-
 // get popular movies by year
 router.get('/years/:year?', async (req, res) => {
-    const year = parseInt(req.params.year);
-    const givenYearPopularMovies = await Movie.getPopularMoviesByYear(year, 25);
-    res.render('movie-list', {
-        title: 'Movies',
-        header: `Popular Movies: ${year}`,
-        movies: givenYearPopularMovies,
+    const year = req.params.year;
+
+    res.render('filter', {
+        title: `Movies - ${year}`,
+        header: `Popular Movies - ${year}`,
+        item_name: 'year',
+        movies: await Movie.getMovieList(
+            year == 'all'
+                ? await Movie.getPopularMovies(25)
+                : await Movie.getPopularMoviesByYear(year, 25)
+        ),
         years: await Movie.getYears()
     });
 });
 
 // get details of a given movie
 router.get('/id/:id?', async (req, res) => {
-    // get movie details
-    const id = req.params.id;
-    const movie = new Movie(id);
+    const movie = new Movie(req.params.id);
     await movie.getDetails();
 
-    // get genres
-    const genres = Genre.getGenreList(await movie.getGenre());
-
-    // get direcotors and casts
-    const directors = Person.getPersonList(await movie.getDirector());
-    const cast = Person.getPersonList(await movie.getCast());
-
-    // user details
     const user = new User(req.session.email);
-    const inWatchlist = await user.movieInWatchlist(id);
-    const rating = await user.getRating(id);
 
-    // get similar movies
-    const similarMovies = await movie.getSimilar(5);
-    const similarCollab = await movie.getSimilarCollab(5);
-
-    // get 5 reviews
-    const records = await movie.getReviews(25);
     const reviews = [];
-    records.forEach(record => reviews.push({
+    (await movie.getReviews(25)).forEach(record => reviews.push({
         email: record[0],
         content: record[1]
     }));
@@ -62,55 +38,54 @@ router.get('/id/:id?', async (req, res) => {
     // respond
     res.render('movie', {
         title: `${movie.title}`,
+        header: `${movie.title} . (${movie.year}) . ${movie.runtime}m`,
         movie,
-        genres,
-        directors,
-        cast,
-        inWatchlist,
-        rating,
-        similarMovies,
-        similarCollab,
+        genres: Genre.getGenreList(await movie.getGenre()),
+        directors: Person.getPersonList(await movie.getDirector()),
+        cast: Person.getPersonList(await movie.getCast()),
+        inWatchlist: await user.movieInWatchlist(movie.id),
+        rating: await user.getRating(movie.id),
+        similarMovies: await movie.getSimilar(5),
+        similarCollab: await movie.getSimilarCollab(5),
         reviews
     });
 });
 
 // get movies similar to a given movie
 router.get('/similar/:id?', async (req, res) => {
-    const id = req.params.id;
-    const movie = new Movie(id);
+    const movie = new Movie(req.params.id);
     await movie.getDetails();
-    const movies = await movie.getSimilar(25);
-    res.render('similar-movie-list', {
+
+    res.render('movie-list', {
         title: `${movie.title} similar`,
         header: `Movies similar to ${movie.title}`,
-        movies
+        movies: await movie.getSimilar(25)
     });
 });
 
 router.get('/people_also_liked/:id?', async (req, res) => {
-    const id = req.params.id;
-    const movie = new Movie(id);
+    const movie = new Movie(req.params.id);
     await movie.getDetails();
-    const movies = await movie.getSimilarCollab(25);
-    res.render('similar-movie-list', {
+
+    res.render('movie-list', {
         title: `${movie.title} similar`,
         header: `People who liked ${movie.title} also liked`,
-        movies
+        movies: await movie.getSimilarCollab(25)
     });
 });
 
 router.get('/review/:id?', async (req, res) => {
-    const id = req.params.id;
-    const movie = new Movie(id);
+    const movie = new Movie(req.params.id);
     await movie.getDetails();
-    const records = await movie.getReviews(25);
+
     const reviews = [];
-    records.forEach(record => reviews.push({
+    (await movie.getReviews(25)).forEach(record => reviews.push({
         email: record[0],
         content: record[1]
     }));
+
     res.render('reviews', {
-        title: `${movie.title} reviews`,
+        title: `Reviews - ${movie.title}`,
         header: `Reviews for ${movie.title}`,
         reviews
     });

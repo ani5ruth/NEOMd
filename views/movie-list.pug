@@ -1,20 +1,11 @@
 extends layout
 
 block content
-  div.my-3.p-3.bg-white.rounded.shadow-sm
-    // header
-    h3.border-bottom.border-gray.pb-2.mb-0 #{header}
-    
-    // select form for filtering by years
-    select#sel1.form-control(onchange="location = this.value;")
-      option(selected='' disabled='' hidden = '') Filter by year...
-      option(value="/movies/") All Time
-      each year in years
-        option(value="/movies/years/"+year) #{year}
-    
-    // movie list
+    if movies.length==0 
+        h4 sorry no results were found
+
     ul.list-group
-      each movie in movies
-        li.list-group-item
-          img(src=movie.poster style = 'width: 5%; border-radius: 5%;')
-          a(href="/movies/id/"+movie.id, style = 'padding-left: 5em;') #{movie.title}
+        each movie in movies
+            li.list-group-item
+                img(src=movie.poster style = 'width: 5%; border-radius: 5%;')
+                a(href=`/movies/id/${movie.id}`, style = 'padding-left: 5em;') #{movie.title}

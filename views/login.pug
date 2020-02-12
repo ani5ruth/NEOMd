@@ -1,14 +1,29 @@
-extends loginLayout
+extends layout
+
 block content
-    form(action = '/auth/login' method = 'post')
-        .form-group
-            input#email.form-control(type='email' name='email' placeholder='E-mail', required = '')
-        .form-group
-            input#password.form-control(type='password' name='password' placeholder='Password', required = '')
-        if(messages.email_err)
-            h5= messages.email_err
-        if(messages.pwd_err)
-            h5= messages.pwd_err
-        button.btn.btn-primary.btn-block(type='submit') Submit
-        br
-        a(href="/auth/register") Register ?
+    if title == 'login'
+        form(action = '/auth/login' method = 'post')
+            .form-group
+                input#email.form-control(type='email' name='email' placeholder='E-mail', required = '')
+            .form-group
+                input#password.form-control(type='password' name='password' placeholder='Password', required = '')
+            if(messages.email_err)
+                h5= messages.email_err
+            if(messages.pwd_err)
+                h5= messages.pwd_err
+            button.btn.btn-primary.btn-block(type='submit') Submit
+            br
+            a(href="/auth/register") 
+                h6 Register ?
+
+    else if title == 'register'
+        form(action = '/auth/register' method = 'post')
+            .form-group
+                input#username.form-control(type='text' name='username' placeholder='Name', required = '')
+            .form-group
+                input#email.form-control(type='email' name='email' placeholder='E-mail', required = '')
+            if(messages.email_err)
+                h5= messages.email_err
+            .form-group
+                input#password.form-control(type='password' name='password' placeholder='Password', required = '')
+            button.btn.btn-primary.btn-block(type='submit') Submit

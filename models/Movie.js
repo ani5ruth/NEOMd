@@ -138,20 +138,20 @@ module.exports = class Movie {
             RETURN collect(imdbId)',
             { limit }
         );
-        return await Movie.getMovieList(response.records[0]._fields[0]);
+        return await response.records[0]._fields[0];
     }
 
     // returns popular movies of given year
     static async getPopularMoviesByYear(year, limit) {
         const response = await executeQuery(
-            'MATCH(m :Movie {year : $year})<-[:RATED]-(:User)\
+            'MATCH(m :Movie {year : toInt($year)})<-[:RATED]-(:User)\
             WITH m.imdbId as imdbId, COUNT(*) AS Relevance\
             ORDER BY Relevance DESC\
             LIMIT $limit\
             RETURN collect(imdbId)',
             { year, limit }
         );
-        return await Movie.getMovieList(response.records[0]._fields[0]);
+        return await response.records[0]._fields[0];
     }
 
     static async getYears() {

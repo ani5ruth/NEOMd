@@ -1,17 +1,12 @@
 extends layout
 
 block content
-  div.my-3.p-3.bg-white.rounded.shadow-sm
-    // header
-    h3.border-bottom.border-gray.pb-2.mb-0 #{header}
-    
-    // movie list
-    if reviews.length==0 
-      h4 sorry no results were found
-
-    ul.list-group
-        each review in reviews
-            li.list-group-item
-                div.my-3.p-3.bg-white.rounded.shadow-sm
-                    h6 Reviewed by #{review.email}
-                    h4 #{review.content}
+	if reviews.length == 0
+		h5 Sorry, no results were found
+		
+	ul.list-group
+		each review in reviews
+			li.list-group-item
+				div.my-3.p-3.bg-white.rounded.shadow-sm
+					h6 Reviewed by #{review.email}
+					h4 #{review.content}

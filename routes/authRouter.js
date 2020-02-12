@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-router.get('/login', (_req, res) => res.render('login'));
-router.get('/register', (_req, res) => res.render('register'));
+router.get('/login', (_req, res) => res.render('login', { title: 'login', header: 'Please login to continue' }));
+router.get('/register', (_req, res) => res.render('login', { title: 'register', header: 'Please register to continue' }));
 router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');

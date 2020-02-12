@@ -7,49 +7,54 @@ html
         link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous')
 
     body.bg-dark
-        // navbar with all links
-        nav.navbar.navbar-expand-md.navbar-dark.bg-dark
-            a.navbar-brand(href='/welcome') NEOMDb
-            button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarsExampleDefault' aria-controls='navbarsExampleDefault' aria-expanded='false' aria-label='Toggle navigation')
-                span.navbar-toggler-icon
-            #navbarsExampleDefault.collapse.navbar-collapse
-                ul.navbar-nav.mr-auto
-                    li.nav-item
-                        a.nav-link(href='/movies')
-                            | Movies 
-                            span.sr-only (current)
-                    li.nav-item
-                        a.nav-link(href='/genres')
-                            | Genres 
-                            span.sr-only (current)
-                    li.nav-item
-                        a.nav-link(href='/persons')
-                            | Persons
-                            span.sr-only (current)
-                    li.nav-item
-                        a.nav-link(href='/users/recommendations')
-                            | Recommendations
-                            span.sr-only (current)
-                    li.nav-item
-                        a.nav-link(href='/users/ratings')
-                            | Ratings
-                            span.sr-only (current)
-                    li.nav-item
-                        a.nav-link(href='/users/watchlist')
-                            | Watchlist
-                            span.sr-only (current)
-                
-                form.form-inline.my-2.my-lg-0(action='/search' method='GET')
-                    input.form-control.mr-sm-2(name='searchString' type='text' placeholder='Search' aria-label='Search')
-                    button.btn.btn-secondary.my-2.my-sm-0(type='submit')
-                        span.fa.fa-search
-                | &nbsp;&nbsp;
-                form.form-inline.my-2.my-lg-0(action='/auth/logout' method='GET')
-                    button.btn.btn-secondary.my-2.my-sm-0(type='submit')
-                        span.fa.fa-sign-out-alt
+        // NAVBAR
+        if title != 'login' || title != 'register'
+            nav.navbar.navbar-expand-md.navbar-dark.bg-dark
+                a.navbar-brand(href='/welcome') NEOMDb
+                button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarsExampleDefault' aria-controls='navbarsExampleDefault' aria-expanded='false' aria-label='Toggle navigation')
+                    span.navbar-toggler-icon
+                #navbarsExampleDefault.collapse.navbar-collapse
+                    ul.navbar-nav.mr-auto
+                        li.nav-item
+                            a.nav-link(href='/movies/years/all')
+                                | Movies 
+                                span.sr-only (current)
+                        li.nav-item
+                            a.nav-link(href='/genres/all')
+                                | Genres 
+                                span.sr-only (current)
+                        li.nav-item
+                            a.nav-link(href='/persons')
+                                | Persons
+                                span.sr-only (current)
+                        li.nav-item
+                            a.nav-link(href='/users/recommendations')
+                                | Recommendations
+                                span.sr-only (current)
+                        li.nav-item
+                            a.nav-link(href='/users/ratings')
+                                | Ratings
+                                span.sr-only (current)
+                        li.nav-item
+                            a.nav-link(href='/users/watchlist')
+                                | Watchlist
+                                span.sr-only (current)
+                    
+                    form.form-inline.my-2.my-lg-0(action='/search' method='GET')
+                        input.form-control.mr-sm-2(name='searchString' type='text' placeholder='Search' aria-label='Search')
+                        button.btn.btn-secondary.my-2.my-sm-0(type='submit')
+                            span.fa.fa-search
+                    | &nbsp;&nbsp;
+                    
+                    form.form-inline.my-2.my-lg-0(action='/auth/logout' method='GET')
+                        button.btn.btn-secondary.my-2.my-sm-0(type='submit')
+                            span.fa.fa-sign-out-alt
                         
+        // MAIN CONTAINER WITH BODY
         main.container
-            block content
+            .my-3.p-3.bg-white.rounded.shadow-sm
+                h3.border-bottom.border-gray.pb-2.mb-0 #{header}
+                    block content
 
         script(src="/bower_components/jquery/dist/jquery.js")
         script(src="/bower_components/bootstrap/dist/js/bootstrap.js")
