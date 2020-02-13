@@ -23,4 +23,4 @@
 ## Algorithms Used:
 - Weighted Similarity Algorithm - computes similar movies based on matching parameters like genres, directors, actors etc.. Weights are used to modify results.
 - Random Seed Algorithm - used for generate recommendations for a particular user. Works by selecting random movies(seeds) rated highly(>=3) by user and generating list of similar movies of these seeds using weighted similarity algorithm mentioned above.
-
+- Collaborative Filtering Algorithm - generates similar movies for a given movie by taking into consideration ratings of others movies  given by users who also rated the given movie. 
