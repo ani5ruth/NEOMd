@@ -2,10 +2,11 @@ extends layout
 
 block content
     if movies.length==0 
-        h5 sorry no results were found
+        h4 sorry no results were found
 
     ul.list-group
         each movie in movies
             li.list-group-item
-                img(src=movie.poster style = 'width: 5%; border-radius: 5%;')
-                a(href=`/movies/id/${movie.id}`, style = 'padding-left: 5em;') #{movie.title}
+                img.rounded(src=movie.poster style = 'width: 5%;')
+                form.pl-5(style='display:inline;')
+                    button.btn.btn-primary.my-sm-0(formaction=`/movies/id/${movie.id}`) #{movie.title}

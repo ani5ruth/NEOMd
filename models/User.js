@@ -23,7 +23,7 @@ module.exports = class User {
             RETURN r.rating',
             { email: this.email, imdbId }
         );
-        return response.records.length == 0 ? null : response.records[0]._fields[0];
+        return response.records.length == 0 ? "Not Rated" : response.records[0]._fields[0];
     }
 
     // sets rating for a given movie given by user
@@ -133,7 +133,7 @@ module.exports = class User {
                 response.records[0]._fields[0].forEach(movie => recommendations.push(movie));
             }
         }
-        return recommendations;
+        return [...new Set(recommendations)];
     }
 
     // returns boolean if email already taken

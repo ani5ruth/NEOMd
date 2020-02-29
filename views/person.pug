@@ -6,11 +6,13 @@ block content
 		ul.list-group
 			each director in popularDirectors
 				li.list-group-item
-					a(href=`/persons/${director.name}`) #{director.name}
+					form
+						button.btn.btn-primary.my-sm-0(formaction=`/persons/${director.name}`)= director.name
 
 	div.my-3.p-3.bg-white.rounded.shadow-sm
 		h3.border-bottom.border-gray.pb-2.mb-0 Popular Actors
 		ul.list-group
 			each actor in popularActors
 				li.list-group-item
-					a(href=`/persons/${actor.name}`) #{actor.name}
+					form
+						button.btn.btn-primary.my-sm-0(formaction=`/persons/${actor.name}`)= actor.name

@@ -27,6 +27,9 @@ module.exports = class Movie {
         const fields = response.records[0]._fields;
         this.title = fields[0];
         this.runtime = fields[1].low;
+        if (this.runtime == undefined) {
+            this.runtime = fields[1];
+        }
         this.year = fields[2].low;
         this.plot = fields[3];
         this.rating = await this.getAvgRating();
@@ -60,8 +63,8 @@ module.exports = class Movie {
             RETURN AVG(toInt(r.rating))',
             { id: this.id }
         );
-
-        return response.records[0]._fields[0].toFixed(2);
+        const rating = response.records[0]._fields[0];
+        return rating == null ? 0 : rating.toFixed(2);
     }
 
     // return director/s of movie

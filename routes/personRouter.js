@@ -7,8 +7,8 @@ router.get('/', async (req, res) => {
     res.render('person', {
         title: `Persons`,
         header: 'Popular Actors/Directors',
-        popularActors: await Person.getPopularDirector(10),
-        popularDirectors: await Person.getPopularActor(10)
+        popularDirectors: await Person.getPopularDirector(10),
+        popularActors: await Person.getPopularActor(10)
     });
 });
 

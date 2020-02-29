@@ -2,6 +2,13 @@ extends layout
 
 block content
     div.container
+        form.form-inline.pl-2.float-right(action=`/users/watchlist/${movie.id}` method='POST')
+            if(!inWatchlist)
+                button.btn.btn-info.my-sm-0(type='submit')
+                    span.fa.fa-plus
+            else
+                button.btn.btn-primary.my-sm-0(type='submit')
+                    span.fa.fa-check
         div.row.my-3.p-3.bg-white.rounded.shadow-sm
             div.col-auto
                 img.rounded(src=movie.poster)
@@ -12,8 +19,8 @@ block content
                     ul.list-group
                         each director in directors
                             li.list-group-item
-                                a(href=`/persons/${director.name}`) 
-                                    h6 #{director.name}
+                                form
+                                    button.btn.btn-primary.my-sm-0(formaction=`/persons/${director.name}`)= director.name
             div.col
                 div.my-3.p-3.bg-white.rounded.shadow-sm
                     h5.text-center.border-bottom.border-gray.pb-2.mb-0 Genre(s)
@@ -21,8 +28,8 @@ block content
                     ul.list-group
                         each genre in genres
                             li.list-group-item
-                                a(href=`/genres/${genre.name}`) 
-                                    h6 #{genre.name}
+                                form
+                                    button.btn.btn-primary.my-sm-0(formaction=`/genres/${genre.name}`)= genre.name
                                     
     div.my-3.p-3.bg-white.rounded.shadow-sm
         h5.text-center.border-bottom.border-gray.pb-2.mb-0 Plot
@@ -34,66 +41,26 @@ block content
         ul.list-group
             each actor in cast
                 li.list-group-item
-                    a(href=`/persons/${actor.name}`) 
-                        h6 #{actor.name}
+                    form
+                        button.btn.btn-primary.my-sm-0(formaction=`/persons/${actor.name}`)= actor.name
 
     // user section (watchlist/rating)
     div.container
         div.row
             div.col
                 div.my-3.p-3.bg-white.rounded.shadow-sm
-                    h5.border-bottom.border-gray.pb-2.mb-0 Average Rating
+                    h5.text-center.border-bottom.border-gray.pb-2.mb-0 Average Rating
                     br
-                    b #{movie.rating}/5
+                    form.align-items-center.justify-content-center.form-inline.my-lg-0()
+                        button.btn.btn-info.my-sm-0(disabled) #{movie.rating}/5
             div.col
                 div.my-3.p-3.bg-white.rounded.shadow-sm
-                    h5.border-bottom.border-gray.pb-2.mb-0 Rating
+                    h5.text-center.border-bottom.border-gray.pb-2.mb-0 Your Rating (Previous : #{rating})
                     br
-                    form(action=`/users/rate/${movie.id}`, method = 'post')
-                        div.form-group.row
-                            div.col-sm-2
-                                if(rating >= 1)
-                                    button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '1') ★
-                                else
-                                    button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '1') ★
-                                h6.pl-3.pt-1 1
-                            div.col-sm-2
-                                if(rating >= 2)
-                                    button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '2') ★
-                                else
-                                    button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '2') ★
-                                h6.pl-3.pt-1 2
-                            div.col-sm-2
-                                if(rating >= 3)
-                                    button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '3') ★
-                                else
-                                    button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '3') ★
-                                h6.pl-3.pt-1 3
-                            div.col-sm-2
-                                if(rating >= 4)
-                                    button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '4') ★
-                                else
-                                    button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '4') ★
-                                h6.pl-3.pt-1 4
-                            div.col-sm-2
-                                if(rating == 5)
-                                    button.text-light.btn.btn-warning(type = 'submit' name = 'rating' value = '5') ★
-                                else
-                                    button.text-warning.btn.btn-light(type = 'submit' name = 'rating' value = '5') ★
-                                h6.pl-3.pt-1 5
-            div.col
-                div.my-3.p-3.bg-white.rounded.shadow-sm
-                    h5.border-bottom.border-gray.pb-2.mb-0 Watchlist
-                    br
-                    form(action=`/users/watchlist/${movie.id}`, method = 'post')
-                        if(!inWatchlist)
-                            div.form-group
-                                button.btn.btn-primary(type = 'submit') +
-                                b.pl-4 Add to watchlist?
-                        else
-                            div.form-group
-                                button.btn.btn-success(type = 'submit') ✓
-                                b.pl-4 Already watchlisted.
+                    form.align-items-center.justify-content-center.form-inline.my-lg-0(action=`/users/rate/${movie.id}` method='POST')
+                        input.form-control.mr-sm-2(type = 'number' min = '1' max = '5' id = "rating" name = "rating" required="")
+                        button.btn.btn-primary.my-sm-0(type='submit')
+                            span.fa.fa-star
         div.row
             div.col
                 div.my-3.p-3.bg-white.rounded.shadow-sm
@@ -101,7 +68,7 @@ block content
                         div.form-group
                             div.d-flex.justify-content-between
                                 h5.border-bottom.border-gray.pb-2.mb-0 Review
-                                button.mb-5.btn.btn-danger(type = 'submit') Post
+                                button.mb-5.btn.btn-primary(type = 'submit') Post
                             textarea.form-control(name = 'review' rows = '5' maxlength = '50')
 
     // similar movies section
@@ -116,10 +83,9 @@ block content
                     each movie in similarMovies
                         td
                             div.card(style='width:11rem;')
-                                img.card-img-top(src=movie.poster)
-                                a.p-2.text-center(href=`/movies/id/${movie.id}`)
+                                a.p-2.text-center(href = `/movies/id/${movie.id}`)
+                                    img.card-img-top(src=movie.poster)
                                     b #{movie.title}
-
     // similar movie collab
     div.my-3.p-3.bg-white.rounded.shadow-sm
         div.d-flex.justify-content-between
@@ -132,8 +98,8 @@ block content
                     each movie in similarCollab
                         td
                             div.card(style='width:11rem;')
-                                img.card-img-top(src=movie.poster)
-                                a.p-2.text-center(href=`/movies/id/${movie.id}`)
+                                a.p-2.text-center(href = `/movies/id/${movie.id}`)
+                                    img.card-img-top(src=movie.poster)
                                     b #{movie.title}
 
     div.my-3.p-3.bg-white.rounded.shadow-sm

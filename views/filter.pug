@@ -20,4 +20,5 @@ block content
         each movie in movies
             li.list-group-item
                 img.rounded(src=movie.poster style = 'width: 5%;')
-                a(href=`/movies/id/${movie.id}`, style = 'padding-left: 3em;') #{movie.title}
+                form.pl-5(style='display:inline;')
+                    button.btn.btn-primary.my-sm-0(formaction=`/movies/id/${movie.id}`)= movie.title

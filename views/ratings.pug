@@ -7,6 +7,8 @@ block content
 		ul.list-group
 			each rating in ratings
 				li.list-group-item
-					b(style = 'padding-right: 2em;')= rating.rating
-					img(src=rating.movie.poster style = 'width: 5%; border-radius: 5%;')
-					a(href="/movies/id/"+rating.movie.id, style = 'padding-left: 5em;')= rating.movie.title 
+					img.rounded(src=rating.movie.poster style='width:5%;')
+					form.pl-5.pr-5(style = 'display:inline;')
+						button.btn.btn-primary.my-sm-0(formaction=`/movies/id/${rating.movie.id}`)= rating.movie.title
+					//a.pr-5(href="/movies/id/"+rating.movie.id, style = 'padding-left: 5em;')= rating.movie.title 
+					button.btn.btn-info.my-sm-0(type='disabled') #{rating.rating} /5

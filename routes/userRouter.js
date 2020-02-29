@@ -22,7 +22,7 @@ router.get('/ratings', async (req, res) => {
     for (const record of await user.getAllRated()) {
         const movie = new Movie(record[0]);
         await movie.getDetails();
-        const rating = record[1];
+        const rating = parseInt(record[1]);
         ratings.push({
             movie: movie,
             rating: rating

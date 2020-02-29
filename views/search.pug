@@ -8,7 +8,8 @@ block content
 		ul.list-group
 			each movie in movies
 				li.list-group-item
-					a(href=`/movies/id/${movie.id}`) #{movie.title}
+					form
+						button.btn.btn-primary.my-sm-0(formaction=`/movies/id/${movie.id}`)= movie.title
 
 	div.my-3.p-3.bg-white.rounded.shadow-sm
 		h4.border-bottom.border-gray.pb-2.mb-0 People
@@ -17,4 +18,5 @@ block content
 		ul.list-group
 			each person in persons
 				li.list-group-item
-					a(href=`/persons/${person.name}`) #{person.name}
+					form
+						button.btn.btn-primary.my-sm-0(formaction=`/persons/${person.name}`)= person.name

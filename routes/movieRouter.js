@@ -38,7 +38,7 @@ router.get('/id/:id?', async (req, res) => {
     // respond
     res.render('movie', {
         title: `${movie.title}`,
-        header: `${movie.title} . (${movie.year}) . ${movie.runtime}m`,
+        header: `${movie.title} ⋅ (${movie.year}) ⋅ ${movie.runtime}m`,
         movie,
         genres: Genre.getGenreList(await movie.getGenre()),
         directors: Person.getPersonList(await movie.getDirector()),
