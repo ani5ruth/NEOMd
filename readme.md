@@ -9,7 +9,7 @@
 - Install [Neo4j Desktop](https://neo4j.com/)
 - Create a new project and create a graph within that project
 - Set username to 'neo4j' and password to '123456'
-- Extract [dataset](recommendation-system-using-graph-db/docs/dataset/recommendations.db.zip) file to Neo4j %NEO4J_HOME%/data/database/graphdb
+- Extract [dataset](https://s3.amazonaws.com/neo4j-sandbox-usecase-datastores/v3_2/recommendations.db.zip) file to Neo4j %NEO4J_HOME%/data/database/graphdb
 - Install [npm](https://www.npmjs.com/) and run the following command inside the root directory  
     - `npm install`  
     - `npm start`
